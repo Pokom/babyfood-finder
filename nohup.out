@@ -1,0 +1,24 @@
+2022-05-07 15:16:06,106 [   3270]   WARN - l.NotificationGroupManagerImpl - Notification group CodeWithMe is already registered (group=com.intellij.notification.NotificationGroup@17829bac). Plugin descriptor: PluginDescriptor(name=Code With Me, id=com.jetbrains.codeWithMe, descriptorPath=plugin.xml, path=/usr/local/src/GoLand/plugins/cwm-plugin, version=212.5712.34, package=null) 
+2022-05-07 15:16:06,537 [   3701]   WARN - nSystem.impl.ActionManagerImpl - keymap "Visual Studio" not found [Plugin: com.intellij] 
+2022-05-07 15:16:06,543 [   3707]   WARN - nSystem.impl.ActionManagerImpl - keymap "Eclipse" not found [Plugin: com.intellij] 
+2022-05-07 15:16:06,543 [   3707]   WARN - nSystem.impl.ActionManagerImpl - keymap "NetBeans 6.5" not found [Plugin: com.intellij] 
+2022-05-07 15:16:06,543 [   3707]   WARN - nSystem.impl.ActionManagerImpl - keymap "Visual Studio" not found [Plugin: com.intellij] 
+2022-05-07 15:16:06,587 [   3751]   WARN - nSystem.impl.ActionManagerImpl - keymap "Eclipse" not found [Plugin: org.jetbrains.plugins.github] 
+2022-05-07 15:16:06,590 [   3754]   WARN - nSystem.impl.ActionManagerImpl - keymap "Eclipse" not found [Plugin: JavaScript] 
+2022-05-07 15:16:06,590 [   3754]   WARN - nSystem.impl.ActionManagerImpl - keymap "Visual Studio" not found [Plugin: JavaScript] 
+2022-05-07 15:16:06,610 [   3774]   WARN - nSystem.impl.ActionManagerImpl - keymap "Visual Studio" not found [Plugin: HtmlTools] 
+2022-05-07 15:18:17,948 [   3511]   WARN - l.NotificationGroupManagerImpl - Notification group CodeWithMe is already registered (group=com.intellij.notification.NotificationGroup@64591697). Plugin descriptor: PluginDescriptor(name=Code With Me, id=com.jetbrains.codeWithMe, descriptorPath=plugin.xml, path=/usr/local/src/GoLand/plugins/cwm-plugin, version=212.5712.34, package=null) 
+2022-05-07 15:18:18,244 [   3807]   WARN - nSystem.impl.ActionManagerImpl - keymap "Visual Studio" not found [Plugin: com.intellij] 
+2022-05-07 15:18:18,250 [   3813]   WARN - nSystem.impl.ActionManagerImpl - keymap "Eclipse" not found [Plugin: com.intellij] 
+2022-05-07 15:18:18,250 [   3813]   WARN - nSystem.impl.ActionManagerImpl - keymap "NetBeans 6.5" not found [Plugin: com.intellij] 
+2022-05-07 15:18:18,250 [   3813]   WARN - nSystem.impl.ActionManagerImpl - keymap "Visual Studio" not found [Plugin: com.intellij] 
+2022-05-07 15:18:18,291 [   3854]   WARN - nSystem.impl.ActionManagerImpl - keymap "Eclipse" not found [Plugin: org.jetbrains.plugins.github] 
+2022-05-07 15:18:18,300 [   3863]   WARN - nSystem.impl.ActionManagerImpl - keymap "Eclipse" not found [Plugin: JavaScript] 
+2022-05-07 15:18:18,300 [   3863]   WARN - nSystem.impl.ActionManagerImpl - keymap "Visual Studio" not found [Plugin: JavaScript] 
+2022-05-07 15:18:18,311 [   3874]   WARN - nSystem.impl.ActionManagerImpl - keymap "Visual Studio" not found [Plugin: HtmlTools] 
+2022-05-07 15:28:26,244 [ 611807]  ERROR - terminal.emulator.JediEmulator - Error processing OSC 1;..ostco-scraper 
+2022-05-07 15:28:28,031 [ 613594]  ERROR - terminal.emulator.JediEmulator - Error processing OSC 1;git 
+2022-05-07 15:28:28,033 [ 613596]  ERROR - terminal.emulator.JediEmulator - Error processing OSC 1;..ostco-scraper 
+2022-05-07 15:28:28,911 [ 614474]  ERROR - terminal.emulator.JediEmulator - Error processing OSC 1;git 
+2022-05-07 15:28:28,920 [ 614483]  ERROR - terminal.emulator.JediEmulator - Error processing OSC 1;..ostco-scraper 
+2022-05-07 15:28:30,007 [ 615570]  ERROR - terminal.emulator.JediEmulator - Error processing OSC 1;git 
