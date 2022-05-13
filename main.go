@@ -1,10 +1,12 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"github.com/twilio/twilio-go"
 	"log"
 	"os"
+	"strings"
 
 	"github.com/playwright-community/playwright-go"
 	openapi "github.com/twilio/twilio-go/rest/api/v2010"
@@ -33,6 +35,7 @@ func sendSMS(msg string) error {
 	}
 	return nil
 }
+
 func init() {
 	err := playwright.Install()
 	if err != nil {
@@ -44,7 +47,6 @@ func init() {
 
 type SearchResult struct {
 	message string
-	results []*Result
 }
 
 func (sr *SearchResult) String() string {
@@ -53,6 +55,10 @@ func (sr *SearchResult) String() string {
 		msg += fmt.Sprintf("Product: %surl:%s\n",result.name, result.url)
 	}
 	return msg
+}
+
+func (r *Result) String() string {
+	return fmt.Sprintf("Name: %surl:%s\n", strings.Trim(r.name, "\n"), r.url)
 }
 
 func searchCostco(page playwright.Page) (*SearchResult, error) {
@@ -125,11 +131,19 @@ type Result struct {
 	url string
 }
 
+func (r Result) Contains(search string) bool {
+	log.Printf("Does %s contain: %s", r.name, search)
+	return strings.Contains(r.name, search)
+}
+
 func NewSearchResults() *SearchResult {
 	return &SearchResult{}
 }
 
 func main() {
+	var search string
+	flag.StringVar(&search, "search", "enfamil", "Search term to filter results by.")
+	flag.Parse()
 	pw, err := playwright.Run()
 	if err != nil {
 		log.Fatalf("could not start playwright: %v", err)
@@ -150,12 +164,18 @@ func main() {
 		log.Fatalf("could not create page: %v", err)
 	}
 
-	res, err := searchCostco(page)
-	err = sendSMS(res.String())
-	if err != nil {
-		log.Println(err)
+	searchResult, err := searchCostco(page)
+	var filtered []*Result
+	for _, result := range searchResult.results {
+		if result.Contains(search) {
+			filtered = append(filtered, result)
+		}
 	}
-
+	msg := fmt.Sprintf("%v", filtered)
+	fmt.Println(msg)
+	if len(filtered) > 0 {
+		sendSMS(msg)
+	}
 
 	if err = browser.Close(); err != nil {
 		log.Fatalf("could not close browser: %v", err)

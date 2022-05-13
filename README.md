@@ -10,6 +10,11 @@ The goal of this project is to make it easier to find out when baby food is avai
 It should optimize for making it easy to *find* stores with baby food.
 It should *not* attempt to automate the purchase of the product.
 
+Up Next:
+- implement Target.com scraping
+- Configure a filter for search results
+- Setup a cronjob 
+
 ## Design
 
 ## Running
