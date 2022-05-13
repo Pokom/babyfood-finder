@@ -12,19 +12,38 @@ import (
 	openapi "github.com/twilio/twilio-go/rest/api/v2010"
 )
 
-var authToken string
+type SMS struct {
+	TwilioAccountSid string
+	TwilioAuthToken  string
+	TwilioFromNumber string
+}
 
-func sendSMS(msg string) error {
-	accountSid := "ACe59edba87a888fbfbf2ce38ba33d03eb"
+type SMSConfig struct {
+	TwilioAuthToken  string
+	TwilioAccountSid string
+	TwilioFromNumber string
+}
+
+func NewSMS(config *SMSConfig) *SMS {
+	return &SMS{
+		TwilioAuthToken:  config.TwilioAuthToken,
+		TwilioAccountSid: config.TwilioAccountSid,
+		TwilioFromNumber: config.TwilioFromNumber,
+	}
+}
+
+func (s *SMS) Send(msg string, to string) error {
+	log.Printf("Config sid=(%s)\nSending message(%s) to %s ", s.TwilioAccountSid, msg, to)
+	accountSid := s.TwilioAccountSid
 
 	client := twilio.NewRestClientWithParams(twilio.ClientParams{
 		Username: accountSid,
-		Password: authToken,
+		Password: s.TwilioAuthToken,
 	})
 
 	params := &openapi.CreateMessageParams{}
-	params.SetTo("+17324067063")
-	params.SetFrom("+19803755389")
+	params.SetTo(to)
+	params.SetFrom(s.TwilioFromNumber)
 	params.SetBody(msg)
 
 	resp, err := client.ApiV2010.CreateMessage(params)
@@ -41,18 +60,17 @@ func init() {
 	if err != nil {
 		log.Fatal(err)
 	}
-	authToken = os.Getenv("TWILIO_API_TOKEN")
-	fmt.Println(authToken)
 }
 
 type SearchResult struct {
 	message string
+	results []*Result
 }
 
 func (sr *SearchResult) String() string {
 	msg := ""
 	for _, result := range sr.results {
-		msg += fmt.Sprintf("Product: %surl:%s\n",result.name, result.url)
+		msg += fmt.Sprintf("Product: %surl:%s\n", result.name, result.url)
 	}
 	return msg
 }
@@ -128,12 +146,12 @@ func NewResult(name string, link string) *Result {
 
 type Result struct {
 	name string
-	url string
+	url  string
 }
 
 func (r Result) Contains(search string) bool {
 	log.Printf("Does %s contain: %s", r.name, search)
-	return strings.Contains(r.name, search)
+	return strings.Contains(strings.ToLower(r.name), strings.ToLower(search))
 }
 
 func NewSearchResults() *SearchResult {
@@ -141,9 +159,13 @@ func NewSearchResults() *SearchResult {
 }
 
 func main() {
-	var search string
+	var search, to string
 	flag.StringVar(&search, "search", "enfamil", "Search term to filter results by.")
+	flag.StringVar(&to, "to", "", "Phone number to send sms message to. *Needs to be validated first*")
 	flag.Parse()
+	if len(to) == 0 {
+		log.Fatalf("to needs to be set.")
+	}
 	pw, err := playwright.Run()
 	if err != nil {
 		log.Fatalf("could not start playwright: %v", err)
@@ -171,10 +193,22 @@ func main() {
 			filtered = append(filtered, result)
 		}
 	}
-	msg := fmt.Sprintf("%v", filtered)
-	fmt.Println(msg)
+	twilioSsd := os.Getenv("TWILIO_API_SSD")
+	twilioApiToken := os.Getenv("TWILIO_API_TOKEN")
+	twilioFromNumber := os.Getenv("TWILIO_FROM_NUMBER")
+	sms := NewSMS(&SMSConfig{
+		TwilioAccountSid: twilioSsd,
+		TwilioAuthToken: twilioApiToken,
+		TwilioFromNumber: twilioFromNumber,
+	})
+
 	if len(filtered) > 0 {
-		sendSMS(msg)
+		msg := fmt.Sprintf("Count %d %s", len(filtered), filtered)
+		if err := sms.Send(msg, to); err != nil {
+			log.Fatalf("Could not send sms: %s", err.Error())
+		}
+	} else {
+		log.Printf("Searching for %s returned zero results.\n", search)
 	}
 
 	if err = browser.Close(); err != nil {
