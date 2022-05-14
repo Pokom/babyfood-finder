@@ -33,7 +33,7 @@ func NewSMS(config *SMSConfig) *SMS {
 }
 
 func (s *SMS) Send(msg string, to string) error {
-	log.Printf("Config sid=(%s)\nSending message(%s) to %s ", s.TwilioAccountSid, msg, to)
+	log.Printf("Config sid=(%s)\nSending message(%s) to %s", s.TwilioAccountSid, msg, to)
 	accountSid := s.TwilioAccountSid
 
 	client := twilio.NewRestClientWithParams(twilio.ClientParams{
@@ -163,9 +163,7 @@ func main() {
 	flag.StringVar(&search, "search", "enfamil", "Search term to filter results by.")
 	flag.StringVar(&to, "to", "", "Phone number to send sms message to. *Needs to be validated first*")
 	flag.Parse()
-	if len(to) == 0 {
-		log.Fatalf("to needs to be set.")
-	}
+
 	pw, err := playwright.Run()
 	if err != nil {
 		log.Fatalf("could not start playwright: %v", err)
@@ -202,10 +200,14 @@ func main() {
 		TwilioFromNumber: twilioFromNumber,
 	})
 
-	if len(filtered) > 0 {
+	if len(filtered) > 0  {
 		msg := fmt.Sprintf("Count %d %s", len(filtered), filtered)
-		if err := sms.Send(msg, to); err != nil {
-			log.Fatalf("Could not send sms: %s", err.Error())
+		if len(to) != 0 {
+			if err := sms.Send(msg, to); err != nil {
+				log.Fatalf("Could not send sms: %s", err.Error())
+			}
+		} else {
+			log.Println(msg)
 		}
 	} else {
 		log.Printf("Searching for %s returned zero results.\n", search)
