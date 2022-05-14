@@ -187,6 +187,9 @@ func main() {
 	}
 
 	searchResult, err := searchCostco(page)
+	if err != nil {
+		log.Fatal(err)
+	}
 	var filtered []*Result
 	for _, result := range searchResult.results {
 		if result.Contains(search) {
