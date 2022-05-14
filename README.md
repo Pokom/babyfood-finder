@@ -12,11 +12,16 @@ It should *not* attempt to automate the purchase of the product.
 
 Up Next:
 - implement Target.com scraping
-- Configure a filter for search results
-- Setup a cronjob 
-
-## Design
+- ~~Configure a filter for search results~~
+- ~~Container Application~~
+- Run the application on a scheduled basis
 
 ## Running
 
-## Contributing
+Prerequisites:
+- Copy `.env.sample` to `.env` and fill out Twilio account [settings](https://console.twilio.com/?frameUrl=%2Fconsole%3Fx-target-region%3Dus1)
+
+```sh
+docker build -t babyfood-finder:main .
+docker run --env-file=.env -it babyfood-scraper:main -to +18675309
+```

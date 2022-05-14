@@ -56,7 +56,9 @@ func (s *SMS) Send(msg string, to string) error {
 }
 
 func init() {
-	err := playwright.Install()
+	err := playwright.Install(&playwright.RunOptions{
+		Browsers: []string{"chromium"},
+	})
 	if err != nil {
 		log.Fatal(err)
 	}
