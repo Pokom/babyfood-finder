@@ -1,0 +1,48 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: babyfood-finder
+spec:
+  schedule: " 10-20 * * *"
+  jobTemplate:
+    spec:
+      ttlSecondsAfterFinished: 7200
+      template:
+        spec:
+          containers:
+            - name: babyfood-finder
+              image: us-central1-docker.pkg.dev/sandbox-307502/quickstart-docker-repo/babyfood-scraper:main
+              command: ["/app/server",  "-to=+17324067063"]
+              resources:
+                requests:
+                  cpu: 500m
+                  memory: 1Gi
+                limits:
+                  cpu: 1000m
+                  memory: 1Gi
+              env:
+                - name: TWILIO_API_SSD
+                  valueFrom:
+                    configMapKeyRef:
+                      name: babyfood-finder
+                      key: TWILIO_API_SSD
+                - name: TWILIO_FROM_NUMBER
+                  valueFrom:
+                    configMapKeyRef:
+                      name: babyfood-finder
+                      key: TWILIO_FROM_NUMBER
+                - name: TWILIO_API_TOKEN
+                  valueFrom:
+                    secretKeyRef:
+                      key: api-key
+                      name: twilio
+                      optional: false
+          restartPolicy: Never
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: babyfood-finder
+data:
+  TWILIO_API_SSD: "ACe59edba87a888fbfbf2ce38ba33d03eb"
+  TWILIO_FROM_NUMBER: "+19803755389"

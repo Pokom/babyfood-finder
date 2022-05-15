@@ -188,7 +188,8 @@ func main() {
 
 	searchResult, err := searchCostco(page)
 	if err != nil {
-		log.Fatal(err)
+		log.Println(err)
+		return
 	}
 	var filtered []*Result
 	for _, result := range searchResult.results {
