@@ -3,13 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/playwright-community/playwright-go"
 	"github.com/twilio/twilio-go"
+	openapi "github.com/twilio/twilio-go/rest/api/v2010"
 	"log"
+	"net/http"
 	"os"
 	"strings"
-
-	"github.com/playwright-community/playwright-go"
-	openapi "github.com/twilio/twilio-go/rest/api/v2010"
 )
 
 type SMS struct {
@@ -201,11 +201,11 @@ func main() {
 	twilioFromNumber := os.Getenv("TWILIO_FROM_NUMBER")
 	sms := NewSMS(&SMSConfig{
 		TwilioAccountSid: twilioSsd,
-		TwilioAuthToken: twilioApiToken,
+		TwilioAuthToken:  twilioApiToken,
 		TwilioFromNumber: twilioFromNumber,
 	})
 
-	if len(filtered) > 0  {
+	if len(filtered) > 0 {
 		msg := fmt.Sprintf("Count %d %s", len(filtered), filtered)
 		if len(to) != 0 {
 			if err := sms.Send(msg, to); err != nil {
@@ -224,4 +224,9 @@ func main() {
 	if err = pw.Stop(); err != nil {
 		log.Fatalf("could not stop Playwright: %v", err)
 	}
+}
+
+func livez(writer http.ResponseWriter, request *http.Request) {
+	log.Printf("Handling request(url=%s)\n", request.URL)
+	fmt.Fprintf(writer, "Healthy!")
 }
