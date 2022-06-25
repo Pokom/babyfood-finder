@@ -3,7 +3,7 @@ kind: CronJob
 metadata:
   name: babyfood-finder
 spec:
-  schedule: " 10-20 * * *"
+  schedule: "18 10-20 * * *"
   jobTemplate:
     spec:
       ttlSecondsAfterFinished: 7200
@@ -11,7 +11,7 @@ spec:
         spec:
           containers:
             - name: babyfood-finder
-              image: us-central1-docker.pkg.dev/sandbox-307502/quickstart-docker-repo/babyfood-scraper:main
+              image: us-east4-docker.pkg.dev/sandbox-307502/docker/babyfood-scraper:latest
               command: ["/app/server",  "-to=+17324067063"]
               resources:
                 requests:
