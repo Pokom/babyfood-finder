@@ -33,7 +33,7 @@ func NewSMS(config *SMSConfig) *SMS {
 }
 
 func (s *SMS) Send(msg string, to string) error {
-	log.Printf("Config sid=(%s)\nSending message(%s) to %s", s.TwilioAccountSid, msg, to)
+	log.Printf("Config sid=(%s)\nSending message(%s) to %s\n", s.TwilioAccountSid, msg, to)
 	accountSid := s.TwilioAccountSid
 
 	client := twilio.NewRestClientWithParams(twilio.ClientParams{
@@ -81,7 +81,7 @@ func (r *Result) String() string {
 	return fmt.Sprintf("Name: %surl:%s\n", strings.Trim(r.name, "\n"), r.url)
 }
 
-func searchCostco(page playwright.Page) (*SearchResult, error) {
+func searchCostco(page playwright.Page, searchTerm string) (*SearchResult, error) {
 	_, err := page.Goto("https://www.costco.com")
 	if err != nil {
 		return nil, err
@@ -90,7 +90,7 @@ func searchCostco(page playwright.Page) (*SearchResult, error) {
 	if err != nil {
 		return nil, fmt.Errorf("could not find search bar: %v", err.Error())
 	}
-	if err := search.Fill("enfamil"); err != nil {
+	if err := search.Fill(searchTerm); err != nil {
 		return nil, fmt.Errorf("Could not fill placeholder for search: %v", err.Error())
 	}
 
@@ -116,18 +116,18 @@ func searchCostco(page playwright.Page) (*SearchResult, error) {
 	for _, entry := range entries {
 		productTile, err := entry.QuerySelector("span.description > a")
 		if err != nil {
-			log.Printf("Could not load product name: %v", err.Error())
+			log.Printf("Could not load product name: %v\n", err.Error())
 			continue
 		}
 
 		productName, err := productTile.TextContent()
 		if err != nil {
-			log.Printf("Could not get product text: %v", err.Error())
+			log.Printf("Could not get product text: %v\n", err.Error())
 			continue
 		}
 		link, err := productTile.GetAttribute("href")
 		if err != nil {
-			log.Printf("Could not get href: %v", err.Error())
+			log.Printf("Could not get href: %v\n", err.Error())
 			continue
 		}
 
@@ -159,8 +159,9 @@ type Result struct {
 }
 
 func (r Result) Contains(search string) bool {
-	log.Printf("Does %s contain: %s", r.name, search)
-	return strings.Contains(strings.ToLower(r.name), strings.ToLower(search))
+	contains := strings.Contains(strings.ToLower(r.name), strings.ToLower(search))
+	log.Printf("%s contain %s?=%t\n", strings.Trim(r.name, "\n"), search, contains)
+	return contains
 }
 
 func NewSearchResults() *SearchResult {
@@ -169,7 +170,7 @@ func NewSearchResults() *SearchResult {
 
 func main() {
 	var search, to string
-	flag.StringVar(&search, "search", "enfamil", "Search term to filter results by.")
+	flag.StringVar(&search, "search", "enfamil gentleease", "Search term to filter results by.")
 	flag.StringVar(&to, "to", "", "Phone number to send sms message to. *Needs to be validated first*")
 	flag.Parse()
 
@@ -193,7 +194,8 @@ func main() {
 		log.Fatalf("could not create page: %v", err)
 	}
 
-	searchResult, err := searchCostco(page)
+	log.Printf("search=(%s)\n", search)
+	searchResult, err := searchCostco(page, search)
 	if err != nil {
 		log.Println(err)
 		return
@@ -225,7 +227,7 @@ func main() {
 			log.Println(msg)
 		}
 	} else {
-		log.Printf("Searching for %s returned zero results.\n", search)
+		log.Printf("Did not send notification to %s\n\tSearching for %s returned zero results.\n", to, search)
 	}
 
 	if err = browser.Close(); err != nil {
