@@ -130,6 +130,13 @@ func searchCostco(page playwright.Page) (*SearchResult, error) {
 			log.Printf("Could not get href: %v", err.Error())
 			continue
 		}
+
+		item, err := entry.QuerySelector("img.product-out-stock-overlay")
+		if item != nil {
+			log.Printf("Found item: %s but Costco is showing it's out of stock \n", productName)
+			// Costco is indicating that the product is out of stock
+			continue
+		}
 		costcoResults.AddResult(NewResult(productName, link))
 	}
 	return costcoResults, nil
@@ -191,12 +198,14 @@ func main() {
 		log.Println(err)
 		return
 	}
+
 	var filtered []*Result
 	for _, result := range searchResult.results {
 		if result.Contains(search) {
 			filtered = append(filtered, result)
 		}
 	}
+
 	twilioSsd := os.Getenv("TWILIO_API_SSD")
 	twilioApiToken := os.Getenv("TWILIO_API_TOKEN")
 	twilioFromNumber := os.Getenv("TWILIO_FROM_NUMBER")
