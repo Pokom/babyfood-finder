@@ -11,8 +11,8 @@ spec:
         spec:
           containers:
             - name: babyfood-finder
-              image: us-east4-docker.pkg.dev/sandbox-307502/docker/babyfood-scraper:latest
-              command: ["/app/server",  "-to=+17324067063"]
+              image: us-east4-docker.pkg.dev/sandbox-307502/docker/babyfood-finder:latest
+              command: ["/app/server",  "-to=+17324067063,+18483910471"]
               resources:
                 requests:
                   cpu: 500m

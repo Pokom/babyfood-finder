@@ -219,9 +219,12 @@ func main() {
 
 	if len(filtered) > 0 {
 		msg := fmt.Sprintf("Count %d %s", len(filtered), filtered)
-		if len(to) != 0 {
-			if err := sms.Send(msg, to); err != nil {
-				log.Fatalf("Could not send sms: %s", err.Error())
+		splitTo := strings.Split(to, ",")
+		if len(splitTo) != 0 {
+			for _, t := range splitTo {
+				if err := sms.Send(msg, t); err != nil {
+					log.Fatalf("Could not send sms: %s", err.Error())
+				}
 			}
 		} else {
 			log.Println(msg)

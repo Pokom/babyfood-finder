@@ -14,5 +14,7 @@ release-gcr: build-docker
 	docker push us-east4-docker.pkg.dev/sandbox-307502/docker/babyfood-finder:latest
 
 run-local: build-docker
-	docker run --env-file=.env -it babyfood-finder:latest -to=+17324067063
+	docker run --env-file=.env -it babyfood-finder:latest -to=+17324067063,+18483910471
+
+
 
